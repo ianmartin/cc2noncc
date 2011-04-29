@@ -8,7 +8,7 @@ c=======================================================================
       integer         iu, nobs, fmt_vers, line_n, first_obs(3)
       character*20    rec_type
       character*4     marker
-      character*2     obs_type(9)
+      character*2     obs_type(18)
       logical         fixed, err
       
       character*80    line, header_line, empty, dynfmt
@@ -21,7 +21,7 @@ c
       err = .false.
 
       nobs = 0
-      do j = 1, 9
+      do j = 1, 18
          obs_type(j) = '  '
       enddo
 c
@@ -38,17 +38,32 @@ c
       do while (.not.endheader)
          read(unit=iu, fmt='(A80)') line
          line_n = line_n + 1
-         if (line(61:79).eq.'# / TYPES OF OBSERV'
-     +       .or. line(61:79).eq.'# / types of observ') then
+c	 
+         if ( (nobs.eq.0).and.(line(61:79).eq.'# / TYPES OF OBSERV'
+     +       .or. line(61:79).eq.'# / types of observ') ) then
             read(line, fmt='(I6)') nobs
 cNacho08 - don't try to correct files with too many observations	    
-	    if (nobs.gt.9) 
-     +       stop 'cc2noncc; cannot correct files with more than 9 obs!'
-            write(dynfmt, fmt='(A, I3.3, A)')
+	    if (nobs.gt.18) 
+     +         stop 'cc2noncc; cannot correct files with more 
+     +                                       than 18 obs types!'
+            if (nobs.gt.9) then
+             write(dynfmt, fmt='(A, I1, A)')
+     +                      "(6X,", 9, "(4X,A2))"
+             read(line, fmt=dynfmt)
+     +                      (obs_type(i), i=1,9)
+	     read(unit=iu, fmt='(A80)') line
+             read(line, fmt=dynfmt)
+     +                      (obs_type(i), i=10,18)
+     
+            else
+	    
+             write(dynfmt, fmt='(A, I3.3, A)')
      +                      "(6X,", nobs, "(4X,A2))"
-            read(line, fmt=dynfmt)
+             read(line, fmt=dynfmt)
      +                      (obs_type(i), i=1,nobs)
+	    endif
          endif
+c	 
          if (line(61:79).eq.'REC # / TYPE / VERS'
      +       .or. line(61:79).eq.'rec # / type / vers') then
             read(line, fmt='(20X,A20)')

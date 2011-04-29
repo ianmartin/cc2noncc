@@ -11,6 +11,18 @@ c         tel +1-301-713-2850 x112
 c         fax +1-301-713-4475
 c         e-mail jimr@ngs.noaa.gov
 c               
+c Maintainer: Ignacio (Nacho) Romero
+c             European Space Agency / European Space Operation Centre
+c             SAC s.l. @ Navigation Support Office
+c             ESA / ESOC / OPS-GN
+c             Robert-Bosch-str 5
+c             64293, Darmstadt 
+c	      Germany
+c             nng.esoc.esa.de
+c             www.canaryadvancedsolutions.com
+c             e-mail: Ignacio.Romero@esa.int
+c                     nacho@canaryadvancedsolutions.com
+c
 c   DESCRIPTION:
 c
 c   This utility is used to convert a RINEX file from a receiver
@@ -200,6 +212,11 @@ c                   now required instead of optional.  No bias values are
 c                   provided in the non-commented source code anymore.
 c                   [vers 5.0]
 c   Nacho 11Mar2008: Update to RINEX 2.11, keeping GLONASS measurements intact.
+c                    [vers 6.0]
+c   Nacho 29Aug2008: updated program to read and correct files with more than 9
+c		     measurement types, up to 15 measurements types are 
+c		     supported now.  Increased the number of satellites 
+c		     supported per epoch from 24 to 99. [vers 6.1]
 c
       program cc2noncc
 c
@@ -225,19 +242,19 @@ c     character*25   tstring
       character*8    cdate
       character*10   ctime
       character*5    czone
-      character*1    char(24)
+      character*1    char(99)
       character*20   rec_type
       character*20   c1p2list(100), c1onlylist(100)
       character*4    marker
-      character*2    obs_type(9)
-      character*1    lli(9,24), snr(9,24),charwarn(40)
+      character*2    obs_type(18)
+      character*1    lli(18,99), snr(18,99),charwarn(40)
       integer        irec, iu, ou, bu, ierr, itime(5), flag, numsat,
      +               prn(24), nobs, sec, msec,
      +               i, j, fmt_vers, first_obs(3), iarray(8)
       integer        c1f, p1f, p2f
       integer        line_n, nwarn, prnwarn(40)
       integer        nc1p2, nc1only
-      real*8         obs(9,24), clockerr, bias(40)
+      real*8         obs(18,99), clockerr, bias(40)
 c
 c     ... Average (P1-C1) biases by PRN number used for corrections.
 c         This set of biases is based on 835 station-days of data
@@ -598,7 +615,8 @@ c
       call blnkstrng (version, 60)
       call blnkstrng (comment, 60)
 c      version = 'CC2nonCC jimr Version 5.0, 23 Nov 2005'
-      version = 'CC2nonCC ESOC Version 6.0, 25 Mar 2008'
+c      version = 'CC2nonCC ESOC Version 6.0, 25 Mar 2008'
+      version = 'CC2nonCC ESOC Version 6.1, 29 Aug 2008'
       write(stderr,*) version
       write(stderr,*) ' '
 c
@@ -853,6 +871,7 @@ c
       p1f = 0
       p2f = 0
 c
+c     
       do i = 1, nobs
          if (obs_type(i) .eq. 'C1') c1f = i
          if (obs_type(i) .eq. 'P1') p1f = i
@@ -912,6 +931,7 @@ c
       rewind(unit=iu)
       open(unit=ou, file=outfile, status='unknown')
       line_n = 0
+
       call copy_header(iu, ou, version, log_line, comment, cbias,
      +                 fmt_vers, nobs, obs_type, line_n, err)
       if (err) then
@@ -927,8 +947,10 @@ c
       eof = .false.
 
       do while (.not.eof .and. .not.err)
+c      
          call read_rec(iu, nobs, itime, sec, msec, flag, numsat, prn,
      +            char, clockerr, obs, lli, snr, eventrecs, err, eof)
+c
          if (.not.err .and. flag .le. 1) then
             irec = irec + 1
 c

@@ -8,11 +8,11 @@ c     ... Write a record to a RINEX file, either RINEX version 1 or 2.
 c
       implicit none
 c
-      integer         ou, nobs, itime(5), prn(24), numsat, flag, sec,
+      integer         ou, nobs, itime(5), prn(99), numsat, flag, sec,
      +                msec, fmt_vers
       character*80    outline, outline2, eventrecs(64), dynfmt, dynfmt2
-      character*1     char(24), lli(9,24), snr(9,24)
-      real*8          obs(9,24), clockerr
+      character*1     char(99), lli(18,99), snr(18,99)
+      real*8          obs(18,99), clockerr
       
       integer         i, i1, i2, itrack, j
 c

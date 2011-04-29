@@ -29,6 +29,7 @@ c     ... skip past header lines
 c
 c     ... search for epoch line
 210   read(unit=bu, fmt='(A80)') line
+c
       if (line(1:14) .eq. '-cc2noncc/corr') then
         if (n_read .eq. 40) err = .false.
         return

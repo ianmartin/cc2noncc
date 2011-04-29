@@ -7,7 +7,7 @@ c
       
       integer         iu, ou, nobs, fmt_vers
       character*60    version, log_line, comment, cbias(5)
-      character*2     obs_type(9)
+      character*2     obs_type(18)
       logical         err
       integer         line_n
       
@@ -19,10 +19,11 @@ c
 c
       err = .false.
 
-      nobs = 0
-      do j = 1, 9
-         obs_type(j) = '  '
-      enddo
+C      nobs = 0
+C      do j = 1, 18
+C         obs_type(j) = '  '
+C      enddo
+
 c
 c     ... READ DATA HEADER
 c
@@ -92,12 +93,12 @@ c
                 commentsdone = .true.
                 call writeline(ou, line, 80)
          else if (line(61:79).eq.'# / TYPES OF OBSERV'
-     +       .or. line(61:79).eq.'# / types of observ') then
-                read(line, fmt='(I6)') nobs
-                write(dynfmt, fmt='(A, I3.3, A)') 
-     +                      "(6X,", nobs, "(4X,A2))"
-                read(line, fmt=dynfmt)
-     +                      (obs_type(i), i=1,nobs)
+     +       .or.line(61:79).eq.'# / types of observ') then
+c                read(line, fmt='(I6)') nobs
+c                write(dynfmt, fmt='(A, I3.3, A)') 
+c     +                      "(6X,", nobs, "(4X,A2))"
+c                read(line, fmt=dynfmt)
+c     +                      (obs_type(i), i=1,nobs)
                 call writeline(ou, line, 80)
          else              ! Indentation here is OK
                 call writeline(ou, line, 80)
