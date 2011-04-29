@@ -15,7 +15,7 @@ c
       real*8          obs(18,99), clockerr
       logical         eof, err
 c
-      integer         ios, i, itrack
+      integer         ios, i, itrack,jj
       character*80    inline, dynfmt, dynfmt2, dynfmt3
 c
       inline = ' '
@@ -28,8 +28,9 @@ c     ... Read the satellite numbers if this is an observation
 c         record, a record indicating restart after power failure,
 c         or a cycle slip record.
 c
-      if (flag.le.1 .or. flag.eq.6)
-     +   read(inline(33:80),'(12(A1,I2),F12.9)')
+c      
+      if (flag.le.1 .or. flag.eq.6) then
+        read(inline(33:80),'(12(A1,I2),F12.9)')
      +         (char(i), prn(i),i=1,12), clockerr
 c
 c Nacho08 - this reads more than one line of sat IDs 
@@ -38,6 +39,8 @@ c Nacho08 - this reads more than one line of sat IDs
          read(inline(33:80),'(12(A1,I2),F12.9)')
      +         (char(i), prn(i),i=13,24), clockerr
         endif
+      endif
+      
       if (flag .le. 1) then
          do itrack = 1, numsat
             if (nobs .le. 5) then

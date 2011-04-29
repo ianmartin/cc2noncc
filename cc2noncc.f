@@ -217,6 +217,9 @@ c   Nacho 29Aug2008: updated program to read and correct files with more than 9
 c		     measurement types, up to 15 measurements types are 
 c		     supported now.  Increased the number of satellites 
 c		     supported per epoch from 24 to 99. [vers 6.1]
+c   Nacho 15Sep2008: updated program to skip over COMMENT lines in the middle of
+c		     the RINEX files correctly (as when splicing files together). 
+c		     [ver 6.2]
 c
       program cc2noncc
 c
@@ -616,7 +619,8 @@ c
       call blnkstrng (comment, 60)
 c      version = 'CC2nonCC jimr Version 5.0, 23 Nov 2005'
 c      version = 'CC2nonCC ESOC Version 6.0, 25 Mar 2008'
-      version = 'CC2nonCC ESOC Version 6.1, 29 Aug 2008'
+c      version = 'CC2nonCC ESOC Version 6.1, 29 Aug 2008'
+      version = 'CC2nonCC ESOC Version 6.2, 15 Sep 2008'
       write(stderr,*) version
       write(stderr,*) ' '
 c
