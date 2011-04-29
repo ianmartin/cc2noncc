@@ -11,6 +11,7 @@ c
       integer         ou, nobs, itime(5), prn(99), numsat, flag, sec,
      +                msec, fmt_vers
       character*80    outline, outline2, eventrecs(64), dynfmt, dynfmt2
+      character*80    dynfmt3
       character*1     char(99), lli(18,99), snr(18,99)
       real*8          obs(18,99), clockerr
       
@@ -75,20 +76,43 @@ c
                write(outline, fmt=dynfmt)
      +            (obs(i,itrack),lli(i,itrack),snr(i,itrack), i=1,nobs)
                call writeline(ou, outline, 80)
-            else
+
+            elseif (nobs .le. 10) then
+c    write first line of obs
                outline = ' '
                write(outline, fmt='( 5(F14.3, 2A1) )')
      +            (obs(i,itrack),lli(i,itrack),snr(i,itrack), i=1,5)
                call writeline(ou, outline, 80)
-c
+c    write second line of obs
+               outline = ' '
+               write(dynfmt2, fmt='(A, I3.3, A)')
+     +           "(", nobs-5, "(F14.3, 2A1))"
+               write(outline, fmt=dynfmt2)
+     +          (obs(i,itrack),lli(i,itrack),snr(i,itrack), i=6,nobs)
+               call writeline(ou, outline, 80)
+
+            elseif (nobs .le. 15) then
+c    write first line of obs
+               outline = ' '
+               write(outline, fmt='( 5(F14.3, 2A1) )')
+     +            (obs(i,itrack),lli(i,itrack),snr(i,itrack), i=1,5)
+               call writeline(ou, outline, 80)
+c    write second line of obs
                outline = ' '
                write(dynfmt2, fmt='(A, I3.3, A)')
      +             "(", nobs-5, "(F14.3, 2A1))"
                write(outline, fmt=dynfmt2)
-     +            (obs(i,itrack),lli(i,itrack),snr(i,itrack), i=6,nobs)
+     +            (obs(i,itrack),lli(i,itrack),snr(i,itrack), i=6,10)
                call writeline(ou, outline, 80)
-
+c    write third line of obs
+               outline = ' '
+               write(dynfmt3, fmt='(A, I3.3, A)')
+     +           "(", nobs-10, "(F14.3, 2A1))"
+               write(outline, fmt=dynfmt3)
+     +          (obs(i,itrack),lli(i,itrack),snr(i,itrack), i=11,nobs)
+               call writeline(ou, outline, 80)
             endif
+
          enddo
       else
 c

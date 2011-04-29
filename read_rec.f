@@ -60,7 +60,7 @@ c	Read two lines of measurements per satellite
             elseif (nobs .le. 15) then
 c	Read three lines of measurements per satellite	    
                write(dynfmt3, fmt='(A, I3.3, A)') 
-     +    "(5(F14.3, 2A1),/,5(F14.3, 2A1),/,", nobs-5, "(F14.3, 2A1))"
+     +    "(5(F14.3, 2A1),/,5(F14.3, 2A1),/,", nobs-10, "(F14.3, 2A1))"
                read(unit=iu, fmt=dynfmt3, iostat=ios)
      +           (obs(i,itrack),lli(i,itrack),snr(i,itrack), i=1,nobs)
 

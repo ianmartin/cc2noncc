@@ -221,6 +221,9 @@ c   Nacho 15Sep2008: updated program to skip over COMMENT lines in the middle of
 c		     the RINEX files correctly (as when splicing files together). 
 c		     [ver 6.2]
 c
+c   Nacho 27Apr2011: updated program to handle 3 lines of observations
+c		     [ver 6.3]
+c
       program cc2noncc
 c
       implicit none
@@ -620,7 +623,8 @@ c
 c      version = 'CC2nonCC jimr Version 5.0, 23 Nov 2005'
 c      version = 'CC2nonCC ESOC Version 6.0, 25 Mar 2008'
 c      version = 'CC2nonCC ESOC Version 6.1, 29 Aug 2008'
-      version = 'CC2nonCC ESOC Version 6.2, 15 Sep 2008'
+c      version = 'CC2nonCC ESOC Version 6.2, 15 Sep 2008'
+      version = 'CC2nonCC ESOC Version 6.3, 27 Apr 2011'
       write(stderr,*) version
       write(stderr,*) ' '
 c
@@ -861,12 +865,12 @@ c     ... Record operational mode
          comment = 'CC2nonCC previously run ... quitting     '
          write(stderr,*) comment
          mods = .false.
-         call exit(1)
+         call exit(0)
       else 
          comment = 'receiver type does not require mods ... quitting'
-c        write(stderr,*) comment
+        write(stderr,*) comment
          mods = .false.
-         call exit(1)
+         call exit(0)
       endif
 c
 c    ... Identify specific observable fields needed
